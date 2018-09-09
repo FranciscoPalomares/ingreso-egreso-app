@@ -1,3 +1,4 @@
+import { AuthService } from './../auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(public __authService: AuthService) { }
 
   ngOnInit() {
   }
 
+  onSubmit(data: any) {
+    console.log(data)
+
+    this.__authService.login(data.email, data.password)
+  }
+
 }
+
+
