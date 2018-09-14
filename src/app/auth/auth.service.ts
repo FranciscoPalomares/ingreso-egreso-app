@@ -1,4 +1,5 @@
-import { SetUserAction } from './auth.actions';
+import { UnsetItemsAction } from './../ingreso-egreso/ingreso-egreso.actions';
+import { SetUserAction, UnsetUserAction } from './auth.actions';
 import { ActivarLoadingAction, DesactivarLoadingAction } from './../shared/ui.actions';
 import { User } from './user.model';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -24,6 +25,8 @@ export class AuthService {
 
   private UserSubscription: Subscription = new Subscription();
 
+  private usuario: User;
+
   constructor(private afAuth: AngularFireAuth,
     private router: Router,
     private afDB: AngularFirestore,
@@ -35,15 +38,17 @@ export class AuthService {
       if (fbUser) {
         this.UserSubscription = this.afDB.doc(`${fbUser.uid}/usuario`).valueChanges()
           .subscribe((usuarioObj: any) => {
-            //console.log(usuarioObj)
+            console.log(usuarioObj)
 
             const newUser = new User(usuarioObj);
 
             this.store.dispatch(new SetUserAction(newUser))
 
+            this.usuario = newUser;
           });
       }
       else {
+        this.usuario = null;
         this.UserSubscription.unsubscribe();
       }
     })
@@ -90,17 +95,17 @@ export class AuthService {
 
     this.store.dispatch(new ActivarLoadingAction());
     this.afAuth.auth.
-      signInAndRetrieveDataWithEmailAndPassword(email, password).
+      signInWithEmailAndPassword(email, password).
       then(
         resp => {
-          console.log(resp)
+          // console.log(resp)
           this.router.navigate(['/']);
 
           this.store.dispatch(new DesactivarLoadingAction);
         }
       ).catch(
         error => {
-          console.error(error)
+          //console.error(error)
           Swal('Error en el login', error.message, 'error');
 
           this.store.dispatch(new DesactivarLoadingAction);
@@ -112,6 +117,8 @@ export class AuthService {
 
 
   logout() {
+    this.store.dispatch(new UnsetUserAction())
+    this.store.dispatch(new UnsetItemsAction())
     this.router.navigate(['/login']);
 
     this.afAuth.auth.signOut();
@@ -132,5 +139,9 @@ export class AuthService {
       )
     )
   }
+
+  getUsuario() {
+    return { ...this.usuario }
+  }
+
 }
-;
