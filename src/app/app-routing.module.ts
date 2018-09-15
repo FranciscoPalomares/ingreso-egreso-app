@@ -4,8 +4,6 @@ import { LoginComponent } from './auth/login/login.component';
 import { NgModule } from "@angular/core";
 
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { dashboardRoutes } from './dashboard/dashboard.routes';
 
 const routes: Routes = [
 
@@ -13,9 +11,8 @@ const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     {
         path: '',
-        component: DashboardComponent,
-        children: dashboardRoutes,
-        canActivate: [AuthGuardService]
+        loadChildren: './ingreso-egreso/ingreso-egreso.module#IngresoEgresoModule',
+        canLoad: [AuthGuardService]
     },
     { path: '**', redirectTo: '' }
 ];

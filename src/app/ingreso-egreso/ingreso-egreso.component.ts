@@ -1,12 +1,13 @@
 import { ActivarLoadingAction, DesactivarLoadingAction } from './../shared/ui.actions';
 import { Subscription } from 'rxjs';
-import { AppState } from './../app.reducer';
+
 import { Store } from '@ngrx/store';
 import { IngresoEgresoService } from './ingreso-egreso.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IngresoEgreso } from './ingreso-egreso.model';
 
+import * as fromIngresoEgreso from '../ingreso-egreso/ingreso-egreso.reducer'
 
 import Swal from 'sweetalert2'
 
@@ -27,7 +28,7 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy {
   cargando: boolean;
 
   constructor(public __ingresoEgresoService: IngresoEgresoService,
-    private store: Store<AppState>) { }
+    private store: Store<fromIngresoEgreso.AppState>) { }
 
   ngOnInit() {
 
